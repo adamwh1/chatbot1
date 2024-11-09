@@ -20,7 +20,7 @@ class QueryRequest(BaseModel):
 
 # Load FAISS index and documents
 try:
-    faiss_index = faiss.read_index('embedded_data/embedded_data.index')
+    faiss_index = faiss.read_index('embedded_data.index')
 except FileNotFoundError:
     raise RuntimeError("Erreur : fichier d'index FAISS introuvable.")
 
