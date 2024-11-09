@@ -2,7 +2,7 @@
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 # More info on Python, GitHub Actions, and Azure App Service: https://aka.ms/python-webapps-actions
 
-name: Build and deploy Python app to Azure Web App - LIADBOT11
+name: Build and deploy Python app to Azure Web App - chatbot1
 
 on:
   push:
@@ -22,13 +22,21 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Install dependencies required for building packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-distutils
+
       - name: Create and start virtual environment
         run: |
           python -m venv venv
           source venv/bin/activate
-      
-      - name: Install dependencies
-        run: pip install -r requirements.txt
+
+      - name: Upgrade pip and install dependencies
+        run: |
+          source venv/bin/activate
+          pip install --upgrade pip setuptools wheel
+          pip install -r requirements.txt
         
       # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
 
@@ -50,7 +58,7 @@ jobs:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
-      id-token: write #This is required for requesting the JWT
+      id-token: write # This is required for requesting the JWT
 
     steps:
       - name: Download artifact from build job
@@ -61,18 +69,16 @@ jobs:
       - name: Unzip artifact for deployment
         run: unzip release.zip
 
-      
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_AA679DC608864B76A495BA7085ADC66D }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_CB72491C1A9848DCB535B9B60E5E1469 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_C53A101C37144B7398FBC691671698BE }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_A29668903BA84221B3465255DA358EAF }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_4661970E426D4474B8166AB13D00F11B }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_4B3820D3E69F44B6898B0E09C612D71C }}
 
-      - name: 'Deploy to Azure Web App'
+      - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         id: deploy-to-webapp
         with:
-          app-name: 'LIADBOT11'
+          app-name: 'chatbot1'
           slot-name: 'Production'
-          
